@@ -1,0 +1,16 @@
+form {
+  background-color: #f2f2f2;
+  width: 100%;
+  margin-top: 20px;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.form-group {
+  padding: 10px 0;
+}
+.form-group input[type="text"] {
+
+font-size: 22px;
+  margin-left: 20px;
+}

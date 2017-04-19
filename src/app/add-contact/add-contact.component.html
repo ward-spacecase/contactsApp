@@ -1,0 +1,22 @@
+<form>
+
+  <div class="form-group">
+  <label>Name: </label>
+  <input type="text" id="name" required class="form-control" name="name" [(ngModel)]="person.name">
+  </div>
+
+  <div class="form-group">
+    <label>Email: </label>
+    <input type="text" name="email" required id="email" [(ngModel)]="person.email">
+  </div>
+
+  <div class="form-group">
+    <label>Phone </label>
+    <input [textMask]="{mask: mask}" required id="phone" name="phone" [(ngModel)]="person.phone" type="text">
+  </div>
+
+  <div class="form-group">
+    <input type="button" (click)="cancel()" value="CANCEL" class="form-button">
+    <input type="button" (click)="submit()" value="SUBMIT" class="form-button">
+  </div>
+</form>

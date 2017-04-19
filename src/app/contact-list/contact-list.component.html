@@ -1,0 +1,14 @@
+
+<table>
+  <tr><th>Name</th><th>Email</th><th>Phone</th></tr>
+
+  <tr *ngFor="let contact of (contacts)"><td>{{contact.name}}</td><td>{{contact.email}}</td>
+    <td>{{contact.phone}} <span class="delete" (click)="delContact(contact)">x</span></td></tr>
+
+  <tr><td colspan="3" class="addContact" (click)="addContact()">Add Contact</td></tr>
+</table>
+
+
+<p class="error" *ngIf="errorMessage">{{errorMessage}}</p>
+
+<app-add-contact *ngFor="let thing of addContacts"></app-add-contact>

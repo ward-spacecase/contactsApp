@@ -23,11 +23,42 @@ export class ContactsService {
       .catch(this.handleError);
   }
 
-  updateContacts(updated): Observable<Contacts[]> {
+  addContacts(newUser): Observable<Contacts[]> {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
-    return this.http.post(this.apiUrl + '/update', updated, options)
+    return this.http.post(this.apiUrl + '/addContact', newUser, options)
+      .map(this.extractData)
+      .catch(this.handleError);
+
+  }
+
+  delContact(contact): Observable<Contacts[]> {
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http.post(this.apiUrl + '/delContact', contact, options)
+      .map(this.extractData)
+      .catch(this.handleError);
+
+  }
+
+
+  search(searchParams): Observable<Contacts[]> {
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http.post(this.apiUrl + '/search', searchParams, options)
+      .map(this.extractData)
+      .catch(this.handleError);
+
+  }
+
+  filter(params): Observable<Contacts[]> {
+
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+    return this.http.post(this.apiUrl + '/filter', params, options)
       .map(this.extractData)
       .catch(this.handleError);
 
@@ -35,7 +66,6 @@ export class ContactsService {
 
   private extractData(res: Response) {
     let body = res.json();
-    console.log(body);
     return body || { };
 
   }

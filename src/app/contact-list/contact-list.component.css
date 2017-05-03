@@ -14,8 +14,15 @@ th, td {
 tr:nth-child(even){background-color: #f2f2f2}
 
 th {
+  transition-duration: .3s;
+  cursor: pointer;
   font-weight: 800;
   background-color: gold;
+}
+
+td {
+  transition-duration: .3s;
+
 }
 
 tr .delete {
@@ -48,4 +55,34 @@ tr:hover .delete {
   padding: 10px 0;
   color: darkred;
   background-color: indianred;
+}
+
+.searchparent {
+  text-align: center;
+  font-size: 40px;
+}
+.search {
+  padding: 5px 15px;
+  color: #ffcf68;
+  font-size: 40px;
+  margin: 20px;
+}
+.search:focus {
+  outline: none;
+  border: 2px solid #ffcf68;
+}
+.focusStyle{
+  color: #ffcf68;
+}
+
+th i {
+  display: none;
+float: right;
+}
+th:hover i {
+  display: inline-block;
+}
+th:hover {
+  color: white;
+  background-color: #6898ff;
 }

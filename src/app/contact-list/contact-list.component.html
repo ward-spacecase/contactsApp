@@ -1,6 +1,13 @@
 
+
+<div class="searchparent">
+ <label [ngClass]="{focusStyle: this.extraStyle}">Search: </label>
+  <input type="text" class="search" (focus)="extraStyle=true" (focusout)="extraStyle=false" (keyup)="search()" [(ngModel)]="searchParams"/>
+</div>
 <table>
-  <tr><th>Name</th><th>Email</th><th>Phone</th></tr>
+  <tr><th (click)="filter()">Name<i class="fa fa-filter"></i></th>
+    <th>Email<i class="fa fa-filter"></i></th>
+    <th>Phone<i class="fa fa-filter"></i></th></tr>
 
   <tr *ngFor="let contact of (contacts)"><td>{{contact.name}}</td><td>{{contact.email}}</td>
     <td>{{contact.phone}} <span class="delete" (click)="delContact(contact)">x</span></td></tr>

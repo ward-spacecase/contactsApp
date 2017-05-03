@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ContactsService } from "../contacts.service/contacts.service";
-import { Contacts } from "./Contacts";
-import { AddContactComponent } from "../add-contact/add-contact.component";
+import { ContactsService } from '../contacts.service/contacts.service';
+import { Contacts } from './Contacts';
+import { AddContactComponent } from '../add-contact/add-contact.component';
 
 
 @Component({
@@ -15,17 +15,21 @@ export class ContactListComponent implements OnInit {
   contacts: Contacts[];
   mode = 'Observable';
   public addContacts;
+  extraStyle: true;
+  searchParams: any;
+  filterBool: boolean;
 
-  constructor(private contactsService: ContactsService) {
+  constructor(public contactsService: ContactsService) {
       this.addContacts = [];
   }
 
   ngOnInit() {
+    this.filterBool = false;
     this.getContacts();
   }
 
 
-  getContacts(){
+  getContacts() {
       this.contactsService.getContacts()
         .subscribe(
           contacts => this.contacts = contacts,
@@ -50,23 +54,42 @@ export class ContactListComponent implements OnInit {
 
    if(confirmed) {
 
-         this.contacts.forEach(function (item, index, theArray) {
+     this.contactsService.delContact(contact).subscribe(
+       contacts => this.contacts = contacts,
+       error => this.errorMessage = <any>error),
+       () => this.getContacts()
 
-           if (contact === item) {
-             theArray.splice(index, 1);
-           }
-         });
-
-      this.updateDatabase();
    }
 
   }
 
-  updateDatabase() {
-    this.contactsService.updateContacts(this.contacts).subscribe(
+  pushContactTo(person) {
+    this.contactsService.addContacts(person).subscribe(
       contacts => this.contacts = contacts,
       error => this.errorMessage = <any>error),
-       () => this.getContacts();
+      () => this.getContacts()
+  }
+
+  search () {
+    this.contactsService.search({"name": this.searchParams}).subscribe(
+      contacts => this.contacts = contacts,
+      error => this.errorMessage = <any>error)
+  }
+
+  filter () {
+      this.filterBool = !this.filterBool;
+      let pass;
+
+      if(this.filterBool) {
+          pass = 1;
+      } else {
+        pass = -1;
+      }
+
+    this.contactsService.filter({"name": this.searchParams, "filter": pass}).subscribe(
+      contacts => this.contacts = contacts,
+      error => this.errorMessage = <any>error)
+
   }
 
 }

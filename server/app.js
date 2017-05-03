@@ -1,16 +1,27 @@
 
 const express = require('express');
-
 const app = express();
 
-const fs = require('fs');
-
 const bodyParser = require('body-parser');
+const MongoClient = require('mongodb').MongoClient;
+const ObjectID = require('mongodb').ObjectId;
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
+
+const url = "mongodb://localhost:27017/contactsDatabase";
+
+MongoClient.connect(url, function(err, db){
+  if(!err){
+    console.log("Database is online!");
+  }
+
+  db.close();
+
+});
+
 
 app.all('/*', function(req, res, next){
   res.header("Access-Control-Allow-Origin", "*");
@@ -20,43 +31,139 @@ app.all('/*', function(req, res, next){
 });
 
 app.get('/', function(req, res){
-  res.setHeader('Content-Type', 'application/json');
 
-  fs.readFile('contacts.json', function(err, data){
+  MongoClient.connect(url, function(err, db) {
+    if(err) {
+      console.log(err);
+      return;
+    }
+    var collection = db.collection('contacts');
 
-    if(err) return err;
-    var newData = JSON.parse(data);
+    collection.find({}).toArray(function(err, docs){
 
-    newData.contacts.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} );     //sorts array alphabetically
+      res.send(docs);
+      db.close();
 
-    res.send(newData.contacts);
+    });
+
+
+  });
+
 
 });
 
 
-});
+app.post('/addContact', function(req, res){
+
+  console.log(' - - - ADD REQUEST - - - ');
 
 
-app.post('/update', function(req, res){
+  MongoClient.connect(url, function(err, db) {
+    if(err) {
+      console.log(err);
+      return;
+    }
+    var collection = db.collection('contacts');
+    collection.insertOne(req.body);
+    collection.find({}).toArray(function(err, docs){
 
-  console.log('POST!!!');
+      res.send(docs);
+      db.close();
 
-  var options = {flag: 'w'};
-
-  var file = {
-    "contacts": req.body
-  };
-
-  file = JSON.stringify(file);
+    });
 
 
-
-  fs.writeFile('contacts.json', file, options, function(err, data){
-    if(err) throw err;
-    console.log('File Save!');
   });
 
 });
+
+app.post('/delContact', function(req, res){
+
+  console.log(' - - - DELETE REQUEST - - - ');
+
+
+
+
+  MongoClient.connect(url, function(err, db) {
+    if(err) {
+      console.log(err);
+      return;
+    }
+    var collection = db.collection('contacts');
+    try {
+
+      collection.deleteOne({"_id": ObjectID(req.body._id)});
+
+    } catch (e) {
+      console.log(e);
+    }
+
+
+    collection.find({}).toArray(function(err, docs){
+      res.send(docs);
+      db.close();
+
+    });
+
+
+  });
+
+});
+
+app.post('/search', function(req, res){
+
+
+
+
+  MongoClient.connect(url, function(err, db) {
+    if(err) {
+      console.log(err);
+      return;
+    }
+
+    var collection = db.collection('contacts');
+
+
+    collection.find({"name": new RegExp(req.body.name, "i")}).toArray(function(err, docs){
+
+
+      res.send(docs);
+      db.close();
+
+    });
+
+
+  });
+
+});
+
+app.post('/filter', function(req, res){
+
+
+
+
+  MongoClient.connect(url, function(err, db) {
+    if(err) {
+      console.log(err);
+      return;
+    }
+
+    var collection = db.collection('contacts');
+
+
+    collection.find({"name": new RegExp(req.body.name, "i")}).sort({name: req.body.filter}).toArray(function(err, docs){
+
+
+      res.send(docs);
+      db.close();
+
+    });
+
+
+  });
+
+});
+
 
 app.listen(4500, function() {
   console.log('Listening...');

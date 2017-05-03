@@ -37,8 +37,7 @@ export class AddContactComponent implements OnInit {
  }
 
  submit() {
-   this.listView.contacts.push(this.person);
-   this.listView.updateDatabase();
+   this.listView.pushContactTo(this.person);
    this.cancel();
  }
 
